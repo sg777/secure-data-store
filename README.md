@@ -110,10 +110,10 @@ this is test data
  ```
 ### Summary
 #### What other options could you use for server-side encryption?
-Especially for encryption as mentioned above I would like add on the following things to imrprove the security.
+Especially for encryption as mentioned above I would to like add on the following things to imrprove the security.
 * Using HSM's to perform crypto operations
 * Using trustzone incase of non availability of HSM's
 * Attesting the users and apps, means only the users with the certificates issued by the data store can establish the secure channel with the data store, this reduces the attack space very significantly.
 #### What other improvements do you think would be interesting to add to the project?
-* Key Management, this is veru crucial there can be n number of users with n number of applications that access th data store. We should go by design priciple that **one key one purpose** means it is advisable to not to use same keys across the users and across the apps. In such scenario, its very crucial to manage the keys and maintain its mapping across the datastore b/w the apps and users. 
+* Key Management, this is very crucial since there can be n number of users with n number of applications that need access to the data store. If we go by the design priciple that **one key one purpose** means it is advisable not to use same keys across the users and apps. In such scenario, its very crucial to manage the keys and maintain its mapping across the datastore b/w the apps and users. 
 * Key creation, this process should be isolated and there should be well chalked out approach who are authorized to create and revoke the keys and how they do it.
