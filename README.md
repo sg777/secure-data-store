@@ -1,80 +1,47 @@
-### Tiny AES in C
+### Secure Data Store
+A tool to store and retrieve the data securely on the local DB. The follows API's of the tool are exposed using which users can store and retrive the data securely.
 
-This is a small and portable implementation of the AES [ECB](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_.28ECB.29), [CTR](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29) and [CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29) encryption algorithms written in C.
-
-You can override the default key-size of 128 bit with 192 or 256 bit by defining the symbols AES192 or AES256 in `aes.h`.
-
-The API is very simple and looks like this (I am using C99 `<stdint.h>`-style annotated types):
-
-```C
-/* Initialize context calling one of: */
-void AES_init_ctx(struct AES_ctx* ctx, const uint8_t* key);
-void AES_init_ctx_iv(struct AES_ctx* ctx, const uint8_t* key, const uint8_t* iv);
-
-/* ... or reset IV at random point: */
-void AES_ctx_set_iv(struct AES_ctx* ctx, const uint8_t* iv);
-
-/* Then start encrypting and decrypting with the functions below: */
-void AES_ECB_encrypt(const struct AES_ctx* ctx, uint8_t* buf);
-void AES_ECB_decrypt(const struct AES_ctx* ctx, uint8_t* buf);
-
-void AES_CBC_encrypt_buffer(struct AES_ctx* ctx, uint8_t* buf, uint32_t length);
-void AES_CBC_decrypt_buffer(struct AES_ctx* ctx, uint8_t* buf, uint32_t length);
-
-/* Same function for encrypting as for decrypting in CTR mode */
-void AES_CTR_xcrypt_buffer(struct AES_ctx* ctx, uint8_t* buf, uint32_t length);
+#### save
+```
+Description: Encrypts the data provided with the key identifier accessable to the server and stores in the local DB
+Usage
+./data_store save data key_id
+```
+#### retrieve
+```
+Description: Retrives the encrypted data with the data identifier provided
+Usage
+./data_store data_id
+```
+#### list_keys
+```
+Description: Lists all the keys available in the server for the user
+Usage
+./data_store list_keys
+```
+#### list_data
+```
+Description: Lists all the encrypted data sets identifiers available in the server
+Usage
+./data_store list_data
 ```
 
-Note: 
- * No padding is provided so for CBC and ECB all buffers should be multiples of 16 bytes. For padding [PKCS7](https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS7) is recommendable.
- * ECB mode is considered unsafe for most uses and is not implemented in streaming mode. If you need this mode, call the function for every block of 16 bytes you need encrypted. See [wikipedia's article on ECB](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB)) for more details.
-
-You can choose to use any or all of the modes-of-operations, by defining the symbols CBC, CTR or ECB. See the header file for clarification.
-
-C++ users should `#include` [aes.hpp](https://github.com/kokke/tiny-AES-c/blob/master/aes.hpp) instead of [aes.h](https://github.com/kokke/tiny-AES-c/blob/master/aes.h)
-
-There is no built-in error checking or protection from out-of-bounds memory access errors as a result of malicious input.
-
-The module uses less than 200 bytes of RAM and 1-2K ROM when compiled for ARM, but YMMV depending on which modes are enabled.
-
-It is one of the smallest implementations in C I've seen yet, but do contact me if you know of something smaller (or have improvements to the code here). 
-
-I've successfully used the code on 64bit x86, 32bit ARM and 8 bit AVR platforms.
-
-
-GCC size output when only CTR mode is compiled for ARM:
-
-    $ arm-none-eabi-gcc -Os -DCBC=0 -DECB=0 -DCTR=1 -c aes.c
-    $ size aes.o
-       text    data     bss     dec     hex filename
-       1343       0       0    1343     53f aes.o
-
-.. and when compiling for the THUMB instruction set, we end up just below 1K in code size.
-
-    $ arm-none-eabi-gcc -Os -mthumb -DCBC=0 -DECB=0 -DCTR=1 -c aes.c
-    $ size aes.o
-       text    data     bss     dec     hex filename
-        979       0       0     979     3d3 aes.o
-
-
-I am using the Free Software Foundation, ARM GCC compiler:
-
-    $ arm-none-eabi-gcc --version
-    arm-none-eabi-gcc (GNU Tools for Arm Embedded Processors 8-2018-q4-major) 8.2.1 20181213 (release)
-    Copyright (C) 2018 Free Software Foundation, Inc.
-    This is free software; see the source for copying conditions.  There is NO
-    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-
-This implementation is verified against the data in:
-
-[National Institute of Standards and Technology Special Publication 800-38A 2001 ED](http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf) Appendix F: Example Vectors for Modes of Operation of the AES.
-
-The other appendices in the document are valuable for implementation details on e.g. padding, generation of IVs and nonces in CTR-mode etc.
-
-
-A heartfelt thank-you to all the nice people out there who have contributed to this project.
-
-
-All material in this repository is in the public domain.
+### Examples
+#### scenario1
+Here user encrypts the data **this is test data** with the with the corresponding key identifier of **k1** and stores it in the local DB.
+```
+Command:
+./data_store save "this is test data" k1
+Console log:
+cipher
+ab 0d 52 23 4f 9c 9b 05 e3 3d 28 55 cd 4b a8 73 6b b7 1e 96 52 43 94 a7 7d 9a 2e 95 46 1b 53 25
+```
+#### scenario2
+Each encrypted data is associated with the data id and the DB has the mapping of the key used to encrypt that data, so when the can simply retrieve the data by mentioned the data_id. Here in this example user running the command to retrieve the data with the data_id **1**.
+```
+ Command:
+./data_store retrieve 1
+Console log:
+Decrypted text is:
+this is test data 
+ ```
