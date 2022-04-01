@@ -1,6 +1,22 @@
 ### Secure Data Store
-A tool to store and retrieve the data securely on the local DB. The follows API's of the tool are exposed using which users can store and retrive the data securely.
+It's a tool to store and retrieve the data securely on the local DB. Basically what this tool does is it allows the user to pick keys from the local key store and encrypt the data using AES-CBC of key length 256 bits.
 
+### Design - The thought process
+
+
+
+### Implementation
+The entire code is written in C. The implementation in this repo is not fully developed its rather i say its the demo implementation of an abstract thought of how a data store can be designed. 
+#### libs used
+* **openssl** for encrypt/decrypt
+* **sqlite3** to maintain local DB
+#### Steps to compile
+Simply run `./run.sh` or following command
+```
+g++ -o data_store data_store.c crypto.c storage.c misc.c -g -w -fpermissive -pthread -ldl -I/usr/local/openssl/include -L/usr/local/openssl/lib -lcrypto -lsqlite3
+```
+
+### API's exposed
 #### save
 ```
 Description: Encrypts the data provided with the key identifier accessable to the server and stores in the local DB
