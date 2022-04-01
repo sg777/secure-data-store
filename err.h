@@ -1,0 +1,3 @@
+#define OK 0
+#define ERR_MEMORY_ALLOC 1
+#define ERR_ARG_SIZE_TOO_LONG 2
