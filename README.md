@@ -2,6 +2,8 @@
 It's a tool to store and retrieve the data securely on the local DB. Basically what this tool does is it allows the user to pick keys from the local key store and encrypt the data using AES-CBC of key length 256 bits.
 
 ## Design - The thought process
+Since for data encryption we always use the symmetric encryption algorithms, the secure one out there is AES in CBC mode with 128 bits block size and key size of 256 bits. If the data shelf time is low like <5 years are so, then we can go for using 128 bit key size. 
+
 The main areas of focus in designing the secure data store are as follows:
 * User authentication
 * Key management & recovery
@@ -106,3 +108,12 @@ Console log:
 Decrypted text is:
 this is test data 
  ```
+### Summary
+#### What other options could you use for server-side encryption?
+Especially for encryption as mentioned above I would like add on the following things to imrprove the security.
+* Using HSM's to perform crypto operations
+* Using trustzone incase of non availability of HSM's
+* Attesting the users and apps, means only the users with the certificates issued by the data store can establish the secure channel with the data store, this reduces the attack space very significantly.
+#### What other improvements do you think would be interesting to add to the project?
+* Key Management, this is veru crucial there can be n number of users with n number of applications that access th data store. We should go by design priciple that **one key one purpose** means it is advisable to not to use same keys across the users and across the apps. In such scenario, its very crucial to manage the keys and maintain its mapping across the datastore b/w the apps and users. 
+* Key creation, this process should be isolated and there should be well chalked out approach who are authorized to create and revoke the keys and how they do it.
