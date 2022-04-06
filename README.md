@@ -108,6 +108,10 @@ Console log:
 Decrypted text is:
 this is test data 
  ```
+### Docker image 
+```
+docker pull sg777/secure_data_store:v1
+```
 ### Summary
 #### What other options could you use for server-side encryption?
 Especially for encryption as mentioned above I would to like add on the following things to imrprove the security.
